@@ -2,7 +2,7 @@ import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { CreateUserDto } from '../dto/create-user.dto';
 import { UpdateUserDto } from '../dto/update-user.dto';
 import { UserRepository } from '../repositories/userRepository';
-import { createHash } from 'crypto';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UserService {
@@ -12,14 +12,25 @@ export class UserService {
 
   async create(dto: CreateUserDto) {
     try {
-      const passwordToMd5 = createHash('md5')
-        .update(dto.password)
-        .digest('hex');
+      const userFound = await this.userRepository.findOne({
+        where: { email: dto.email },
+      });
+
+      if (userFound) {
+        throw new HttpException(
+          { message: 'User alread registered' },
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+
+      const passwordToMd5 = await bcrypt.hash(dto.password, 10);
 
       const user = await this.userRepository.create({
         ...dto,
         password: passwordToMd5,
       });
+
+      delete user.password;
 
       return user;
     } catch (error) {
@@ -102,7 +113,10 @@ export class UserService {
 
   async update(id: number, dto: UpdateUserDto) {
     try {
-      await this.userRepository.update(id, dto);
+      await this.userRepository.update(id, {
+        ...dto,
+        password: await bcrypt.hash(dto.password, 10),
+      });
 
       return { message: 'User updated successfully' };
     } catch (error) {
