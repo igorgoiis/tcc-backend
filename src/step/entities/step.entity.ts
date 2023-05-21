@@ -22,6 +22,6 @@ export class Step {
   observation: string;
 
   @ManyToOne(() => Process)
-  @JoinColumn({ name: 'id_processo' })
+  @JoinColumn({ name: 'process_id' })
   process: Process;
 }

@@ -6,6 +6,7 @@ import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
 import { ProcessModule } from './process/process.module';
 import { StepModule } from './step/step.module';
+import { ActivityModule } from './activity/activity.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { StepModule } from './step/step.module';
     AuthModule,
     ProcessModule,
     StepModule,
+    ActivityModule,
   ],
   controllers: [AppController],
   providers: [AppService],
