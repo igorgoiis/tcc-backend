@@ -1,4 +1,12 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
 import { StepService } from './step.service';
 import { CreateStepDto } from './dto/create-step.dto';
 import { UpdateStepDto } from './dto/update-step.dto';
@@ -12,14 +20,14 @@ export class StepController {
     return this.stepService.create(createStepDto);
   }
 
-  @Get()
-  findAll() {
-    return this.stepService.findAll();
-  }
-
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.stepService.findOne(+id);
+  }
+
+  @Get('/process/:id')
+  findAll(@Param('id') id: string) {
+    return this.stepService.findAll(+id);
   }
 
   @Patch(':id')
